@@ -5,12 +5,14 @@ public class Expense {
     private double amount;
     private String date;
 
+    // Конструктор
     public Expense(String name, double amount, String date) {
         this.name = name;
         this.amount = amount;
         this.date = date;
     }
 
+    // Геттери та сеттери
     public String getName() {
         return name;
     }
@@ -37,6 +39,6 @@ public class Expense {
 
     @Override
     public String toString() {
-        return "Витрата: " + name + ", Сума: " + amount + ", Дата: " + date;
+        return "Expense [name=" + name + ", amount=" + amount + ", date=" + date + "]";
     }
 }

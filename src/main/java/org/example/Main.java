@@ -9,88 +9,79 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        JsonStorage storage = new JsonStorage();
-        ExpenseService service = new ExpenseService(storage);
         Scanner scanner = new Scanner(System.in);
+        JsonStorage jsonStorage = new JsonStorage();
+        ExpenseService expenseService = new ExpenseService(jsonStorage);
 
         while (true) {
-            System.out.println("\n=== Меню ===");
+            System.out.println("Меню:");
             System.out.println("1. Додати витрату");
-            System.out.println("2. Переглянути всі витрати");
+            System.out.println("2. Показати всі витрати");
             System.out.println("3. Оновити витрату");
             System.out.println("4. Видалити витрату");
-            System.out.println("5. Сортувати витрати");
-            System.out.println("6. Вийти");
-            System.out.print("Оберіть опцію: ");
-
+            System.out.println("5. Сортувати витрати за сумою");
+            System.out.println("6. Сортувати витрати за датою");
+            System.out.println("7. Вийти");
+            System.out.print("Вибір: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // очищення буфера після nextInt()
+            scanner.nextLine();  // Очистити буфер
 
             switch (choice) {
                 case 1:
+                    // Додавання витрати
                     System.out.print("Введіть назву витрати: ");
                     String name = scanner.nextLine();
-                    System.out.print("Введіть суму: ");
+                    System.out.print("Введіть суму витрати: ");
                     double amount = scanner.nextDouble();
-                    scanner.nextLine(); // очищення буфера
-                    System.out.print("Введіть дату (рррр-мм-дд): ");
+                    scanner.nextLine();  // Очистити буфер
+                    System.out.print("Введіть дату витрати (формат: YYYY-MM-DD): ");
                     String date = scanner.nextLine();
-                    service.addExpense(new Expense(name, amount, date));
+                    Expense expense = new Expense(name, amount, date);
+                    expenseService.addExpense(expense);
+                    System.out.println("Витрату додано!");
                     break;
                 case 2:
-                    List<Expense> expenses = service.getAllExpenses();
-                    if (expenses.isEmpty()) {
-                        System.out.println("Немає жодної витрати.");
-                    } else {
-                        for (Expense expense : expenses) {
-                            System.out.println(expense);
-                        }
+                    // Показати всі витрати
+                    List<Expense> expenses = expenseService.getAllExpenses();
+                    for (Expense exp : expenses) {
+                        System.out.println(exp);
                     }
                     break;
                 case 3:
+                    // Оновити витрату
                     System.out.print("Введіть назву витрати, яку хочете оновити: ");
                     String updateName = scanner.nextLine();
-                    System.out.print("Введіть нову суму: ");
+                    System.out.print("Введіть нову суму витрати: ");
                     double newAmount = scanner.nextDouble();
-                    scanner.nextLine();
-                    System.out.print("Введіть нову дату (рррр-мм-дд): ");
+                    scanner.nextLine();  // Очистити буфер
+                    System.out.print("Введіть нову дату витрати (формат: YYYY-MM-DD): ");
                     String newDate = scanner.nextLine();
-                    service.updateExpense(updateName, newAmount, newDate);
+                    expenseService.updateExpense(updateName, newAmount, newDate);
+                    System.out.println("Витрату оновлено!");
                     break;
                 case 4:
+                    // Видалити витрату
                     System.out.print("Введіть назву витрати, яку хочете видалити: ");
                     String deleteName = scanner.nextLine();
-                    service.deleteExpense(deleteName);
+                    expenseService.deleteExpense(deleteName);
+                    System.out.println("Витрату видалено!");
                     break;
                 case 5:
-                    System.out.println("Оберіть спосіб сортування:");
-                    System.out.println("1. За сумою (від меншої до більшої)");
-                    System.out.println("2. За датою (від новішої до старішої)");
-                    System.out.print("Ваш вибір: ");
-                    int sortChoice = scanner.nextInt();
-                    scanner.nextLine();
-
-                    List<Expense> sortedExpenses;
-                    if (sortChoice == 1) {
-                        sortedExpenses = service.sortByAmount();
-                        System.out.println("Список відсортований за сумою:");
-                    } else if (sortChoice == 2) {
-                        sortedExpenses = service.sortByDate();
-                        System.out.println("Список відсортований за датою:");
-                    } else {
-                        System.out.println("Невірний вибір.");
-                        continue;
-                    }
-
-                    for (Expense expense : sortedExpenses) {
-                        System.out.println(expense);
-                    }
+                    // Сортувати витрати за сумою
+                    expenseService.sortExpensesByAmount();
+                    System.out.println("Витрати відсортовано за сумою!");
                     break;
                 case 6:
-                    System.out.println("Вихід...");
+                    // Сортувати витрати за датою
+                    expenseService.sortExpensesByDate();
+                    System.out.println("Витрати відсортовано за датою!");
+                    break;
+                case 7:
+                    // Вихід
+                    System.out.println("До зустрічі!");
                     return;
                 default:
-                    System.out.println("Неправильний вибір, спробуйте ще раз.");
+                    System.out.println("Невірний вибір. Спробуйте ще раз.");
             }
         }
     }

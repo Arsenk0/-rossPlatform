@@ -23,57 +23,51 @@ public class Main {
             System.out.println("7. Пошук витрат");
             System.out.println("8. Вийти");
             System.out.print("Вибір: ");
-            int choice = InputUtil.nextInt();
+            int choice = InputUtil.readInt();
 
             switch (choice) {
                 case 1: // Додати витрату
                     System.out.print("Введіть назву витрати: ");
-                    String name = InputUtil.nextLine();
+                    String name = InputUtil.readLine();
                     System.out.print("Введіть суму витрати: ");
-                    double amount = InputUtil.nextDouble();
+                    double amount = InputUtil.readDouble();
                     System.out.print("Введіть дату витрати (формат YYYY-MM-DD): ");
-                    String date = InputUtil.nextLine();
+                    String date = InputUtil.readLine();
                     expenseService.addExpense(new Expense(name, amount, date));
                     break;
 
                 case 2: // Показати всі витрати
                     List<Expense> expenses = expenseService.getAllExpenses();
-                    if (expenses.isEmpty()) {
-                        System.out.println("Витрати відсутні.");
-                    } else {
-                        for (Expense expense : expenses) {
-                            System.out.println(expense);
-                        }
+                    for (Expense expense : expenses) {
+                        System.out.println(expense);
                     }
                     break;
 
                 case 3: // Оновити витрату
                     System.out.print("Введіть назву витрати для оновлення: ");
-                    String updateName = InputUtil.nextLine();
+                    String updateName = InputUtil.readLine();
                     System.out.print("Введіть нову суму витрати: ");
-                    double updateAmount = InputUtil.nextDouble();
+                    double updateAmount = InputUtil.readDouble();
                     System.out.print("Введіть нову дату витрати: ");
-                    String updateDate = InputUtil.nextLine();
+                    String updateDate = InputUtil.readLine();
                     expenseService.updateExpense(updateName, updateAmount, updateDate);
                     break;
 
                 case 4: // Видалити витрату
                     System.out.print("Введіть назву витрати для видалення: ");
-                    String deleteName = InputUtil.nextLine();
+                    String deleteName = InputUtil.readLine();
                     expenseService.deleteExpense(deleteName);
                     break;
 
                 case 5: // Сортувати витрати за сумою
-                    List<Expense> sortedByAmount = expenseService.getAllExpenses();
-                    sortedByAmount.sort((e1, e2) -> Double.compare(e1.getAmount(), e2.getAmount()));
+                    List<Expense> sortedByAmount = expenseService.sortByAmount();
                     for (Expense expense : sortedByAmount) {
                         System.out.println(expense);
                     }
                     break;
 
                 case 6: // Сортувати витрати за датою
-                    List<Expense> sortedByDate = expenseService.getAllExpenses();
-                    sortedByDate.sort((e1, e2) -> e1.getDate().compareTo(e2.getDate()));
+                    List<Expense> sortedByDate = expenseService.sortByDate();
                     for (Expense expense : sortedByDate) {
                         System.out.println(expense);
                     }
@@ -81,9 +75,9 @@ public class Main {
 
                 case 7: // Пошук витрат
                     System.out.println("Введіть назву витрати для пошуку (залиште порожнім для пошуку за датою):");
-                    String searchName = InputUtil.nextLine();
+                    String searchName = InputUtil.readLine();
                     System.out.println("Введіть дату витрати для пошуку (формат YYYY-MM-DD, залиште порожнім для пошуку за назвою):");
-                    String searchDate = InputUtil.nextLine();
+                    String searchDate = InputUtil.readLine();
 
                     List<Expense> searchResults = expenseService.searchExpenses(searchName, searchDate);
                     if (searchResults.isEmpty()) {

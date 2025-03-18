@@ -3,53 +3,62 @@ package org.example.service;
 import org.example.model.Expense;
 import org.example.storage.JsonStorage;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ExpenseService {
-    private List<Expense> expenses;
     private final JsonStorage jsonStorage;
 
     public ExpenseService(JsonStorage jsonStorage) {
         this.jsonStorage = jsonStorage;
-        this.expenses = jsonStorage.loadExpenses();  // Завантажуємо витрати з файлу JSON
     }
 
     public void addExpense(Expense expense) {
-        if (expenses == null) {
-            expenses = new ArrayList<>();  // Ініціалізація списку витрат, якщо він ще не ініціалізований
-        }
+        List<Expense> expenses = jsonStorage.loadExpenses();
         expenses.add(expense);
-        jsonStorage.saveExpenses(expenses);  // Зберігаємо витрати після додавання
+        jsonStorage.saveExpenses(expenses);
     }
 
     public List<Expense> getAllExpenses() {
-        return expenses;
+        return jsonStorage.loadExpenses();
     }
 
-    public void updateExpense(String name, double newAmount, String newDate) {
+    public void updateExpense(String name, double amount, String date) {
+        List<Expense> expenses = jsonStorage.loadExpenses();
         for (Expense expense : expenses) {
-            if (expense.getName().equals(name)) {
-                expense = new Expense(name, newAmount, newDate);
-                jsonStorage.saveExpenses(expenses);  // Оновлюємо файл після зміни витрати
-                break;
+            if (expense.getName().equalsIgnoreCase(name)) {
+                expense.setAmount(amount);
+                expense.setDate(date);
+                jsonStorage.saveExpenses(expenses);
+                return;
             }
         }
     }
 
     public void deleteExpense(String name) {
-        expenses.removeIf(expense -> expense.getName().equals(name));
-        jsonStorage.saveExpenses(expenses);  // Оновлюємо файл після видалення витрати
+        List<Expense> expenses = jsonStorage.loadExpenses();
+        expenses.removeIf(expense -> expense.getName().equalsIgnoreCase(name));
+        jsonStorage.saveExpenses(expenses);
+    }
+
+    public List<Expense> sortByAmount() {
+        List<Expense> expenses = jsonStorage.loadExpenses();
+        expenses.sort(Comparator.comparingDouble(Expense::getAmount));
+        return expenses;
+    }
+
+    public List<Expense> sortByDate() {
+        List<Expense> expenses = jsonStorage.loadExpenses();
+        expenses.sort(Comparator.comparing(Expense::getDate));
+        return expenses;
     }
 
     public List<Expense> searchExpenses(String name, String date) {
-        List<Expense> result = new ArrayList<>();
-        for (Expense expense : expenses) {
-            if ((name.isEmpty() || expense.getName().contains(name)) &&
-                    (date.isEmpty() || expense.getDate().equals(date))) {
-                result.add(expense);
-            }
-        }
-        return result;
+        List<Expense> expenses = jsonStorage.loadExpenses();
+        return expenses.stream()
+                .filter(expense -> (name.isEmpty() || expense.getName().equalsIgnoreCase(name)) &&
+                        (date.isEmpty() || expense.getDate().equals(date)))
+                .toList();
     }
 }

@@ -11,6 +11,7 @@ public class Expense {
         this.date = date;
     }
 
+    // Геттери
     public String getName() {
         return name;
     }
@@ -23,8 +24,17 @@ public class Expense {
         return date;
     }
 
+    // Сеттери
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
-        return "Витрата: " + name + ", сума: " + amount + ", дата: " + date;
+        return "Витрата: " + name + ", Сума: " + amount + ", Дата: " + date;
     }
 }

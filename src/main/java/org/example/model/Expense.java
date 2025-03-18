@@ -3,7 +3,7 @@ package org.example.model;
 public class Expense {
     private String name;
     private double amount;
-    private String date;
+    private String date; // Додано для зберігання дати витрати
 
     // Конструктор
     public Expense(String name, double amount, String date) {

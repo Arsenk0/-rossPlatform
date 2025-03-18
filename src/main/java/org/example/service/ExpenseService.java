@@ -13,42 +13,61 @@ public class ExpenseService {
         this.jsonStorage = jsonStorage;
     }
 
+    // Додавання витрати
     public void addExpense(Expense expense) {
+        if (expense.getAmount() <= 0) {
+            System.out.println("Сума витрати має бути більше 0!");
+            return;
+        }
         List<Expense> expenses = jsonStorage.readExpenses();
         expenses.add(expense);
         jsonStorage.saveExpenses(expenses);
+        System.out.println("Витрату успішно додано!");
     }
 
+    // Отримання списку витрат
     public List<Expense> getAllExpenses() {
         return jsonStorage.readExpenses();
     }
 
+    // Оновлення витрати
     public void updateExpense(String name, double amount, String date) {
         List<Expense> expenses = jsonStorage.readExpenses();
+        boolean found = false;
         for (Expense expense : expenses) {
-            if (expense.getName().equals(name)) {
+            if (expense.getName().equalsIgnoreCase(name)) {
                 expense.setAmount(amount);
                 expense.setDate(date);
-                jsonStorage.saveExpenses(expenses);
-                System.out.println("Витрату оновлено!");
-                return;
+                found = true;
+                break;
             }
         }
-        System.out.println("Витрату не знайдено!");
+        if (found) {
+            jsonStorage.saveExpenses(expenses);
+            System.out.println("Витрату оновлено!");
+        } else {
+            System.out.println("Витрату не знайдено!");
+        }
     }
 
+    // Видалення витрати
     public void deleteExpense(String name) {
         List<Expense> expenses = jsonStorage.readExpenses();
         Iterator<Expense> iterator = expenses.iterator();
+        boolean found = false;
         while (iterator.hasNext()) {
             Expense expense = iterator.next();
-            if (expense.getName().equals(name)) {
+            if (expense.getName().equalsIgnoreCase(name)) {
                 iterator.remove();
-                jsonStorage.saveExpenses(expenses);
-                System.out.println("Витрату видалено!");
-                return;
+                found = true;
+                break;
             }
         }
-        System.out.println("Витрату не знайдено!");
+        if (found) {
+            jsonStorage.saveExpenses(expenses);
+            System.out.println("Витрату видалено!");
+        } else {
+            System.out.println("Витрату не знайдено!");
+        }
     }
 }

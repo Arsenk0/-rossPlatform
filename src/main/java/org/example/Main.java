@@ -19,7 +19,8 @@ public class Main {
             System.out.println("2. Переглянути всі витрати");
             System.out.println("3. Оновити витрату");
             System.out.println("4. Видалити витрату");
-            System.out.println("5. Вийти");
+            System.out.println("5. Сортувати витрати");
+            System.out.println("6. Вийти");
             System.out.print("Оберіть опцію: ");
 
             int choice = scanner.nextInt();
@@ -62,6 +63,30 @@ public class Main {
                     service.deleteExpense(deleteName);
                     break;
                 case 5:
+                    System.out.println("Оберіть спосіб сортування:");
+                    System.out.println("1. За сумою (від меншої до більшої)");
+                    System.out.println("2. За датою (від новішої до старішої)");
+                    System.out.print("Ваш вибір: ");
+                    int sortChoice = scanner.nextInt();
+                    scanner.nextLine();
+
+                    List<Expense> sortedExpenses;
+                    if (sortChoice == 1) {
+                        sortedExpenses = service.sortByAmount();
+                        System.out.println("Список відсортований за сумою:");
+                    } else if (sortChoice == 2) {
+                        sortedExpenses = service.sortByDate();
+                        System.out.println("Список відсортований за датою:");
+                    } else {
+                        System.out.println("Невірний вибір.");
+                        continue;
+                    }
+
+                    for (Expense expense : sortedExpenses) {
+                        System.out.println(expense);
+                    }
+                    break;
+                case 6:
                     System.out.println("Вихід...");
                     return;
                 default:

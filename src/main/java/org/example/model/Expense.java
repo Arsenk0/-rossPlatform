@@ -3,42 +3,28 @@ package org.example.model;
 public class Expense {
     private String name;
     private double amount;
-    private String date; // Додано для зберігання дати витрати
+    private String date;
 
-    // Конструктор
     public Expense(String name, double amount, String date) {
         this.name = name;
         this.amount = amount;
         this.date = date;
     }
 
-    // Геттери та сеттери
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
     public String getDate() {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     @Override
     public String toString() {
-        return "Expense [name=" + name + ", amount=" + amount + ", date=" + date + "]";
+        return "Витрата: " + name + ", сума: " + amount + ", дата: " + date;
     }
 }

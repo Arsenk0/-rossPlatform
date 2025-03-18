@@ -4,76 +4,52 @@ import org.example.model.Expense;
 import org.example.storage.JsonStorage;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ExpenseService {
-    private JsonStorage jsonStorage;
+    private List<Expense> expenses;
+    private final JsonStorage jsonStorage;
 
     public ExpenseService(JsonStorage jsonStorage) {
         this.jsonStorage = jsonStorage;
+        this.expenses = jsonStorage.loadExpenses();  // Завантажуємо витрати з файлу JSON
     }
 
     public void addExpense(Expense expense) {
-        List<Expense> expenses = jsonStorage.readExpenses();
+        if (expenses == null) {
+            expenses = new ArrayList<>();  // Ініціалізація списку витрат, якщо він ще не ініціалізований
+        }
         expenses.add(expense);
-        jsonStorage.saveExpenses(expenses);
+        jsonStorage.saveExpenses(expenses);  // Зберігаємо витрати після додавання
     }
 
     public List<Expense> getAllExpenses() {
-        return jsonStorage.readExpenses();
+        return expenses;
     }
 
-    public void updateExpense(String name, double amount, String date) {
-        List<Expense> expenses = jsonStorage.readExpenses();
+    public void updateExpense(String name, double newAmount, String newDate) {
         for (Expense expense : expenses) {
             if (expense.getName().equals(name)) {
-                expense.setAmount(amount);
-                expense.setDate(date);
-                jsonStorage.saveExpenses(expenses);
-                return;
+                expense = new Expense(name, newAmount, newDate);
+                jsonStorage.saveExpenses(expenses);  // Оновлюємо файл після зміни витрати
+                break;
             }
         }
-        System.out.println("Витрату не знайдено!");
     }
 
     public void deleteExpense(String name) {
-        List<Expense> expenses = jsonStorage.readExpenses();
-        Iterator<Expense> iterator = expenses.iterator();
-        while (iterator.hasNext()) {
-            Expense expense = iterator.next();
-            if (expense.getName().equals(name)) {
-                iterator.remove();
-                jsonStorage.saveExpenses(expenses);
-                return;
-            }
-        }
-        System.out.println("Витрату не знайдено!");
+        expenses.removeIf(expense -> expense.getName().equals(name));
+        jsonStorage.saveExpenses(expenses);  // Оновлюємо файл після видалення витрати
     }
 
-    // Метод для пошуку витрат по назві та даті
     public List<Expense> searchExpenses(String name, String date) {
-        List<Expense> expenses = jsonStorage.readExpenses();
         List<Expense> result = new ArrayList<>();
-
-        // Пошук за назвою
-        if (name != null && !name.isEmpty()) {
-            for (Expense expense : expenses) {
-                if (expense.getName().toLowerCase().contains(name.toLowerCase())) {
-                    result.add(expense);
-                }
+        for (Expense expense : expenses) {
+            if ((name.isEmpty() || expense.getName().contains(name)) &&
+                    (date.isEmpty() || expense.getDate().equals(date))) {
+                result.add(expense);
             }
         }
-
-        // Пошук за датою
-        if (date != null && !date.isEmpty()) {
-            for (Expense expense : expenses) {
-                if (expense.getDate().equals(date)) {
-                    result.add(expense);
-                }
-            }
-        }
-
         return result;
     }
 }
